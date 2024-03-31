@@ -11,23 +11,8 @@ static bool is_ident(char c) {
   return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
 }
 
-static int read_punct(char *str) {
-  static char *kw[] = {};
-  for (int i = 0; i < sizeof(kw) / sizeof(*kw); i++) {
-    int len = strlen(kw[i]);
-    if (strncmp(str, kw[i], len) == 0) {
-      return len;
-    }
-  }
-
-  return ispunct(*str) ? 1 : 0;
-}
-
-static int read_digit(char *str) {
-  char *end;
-  strtoul(str, &end, 10);
-  int len = end - str;
-  return len;
+static bool startswith(char *p, char *prefix) {
+  return strncmp(p, prefix, strlen(prefix)) == 0;
 }
 
 static Token *new_token(TokenKind kind, char *start, char *end) {
@@ -39,14 +24,47 @@ static Token *new_token(TokenKind kind, char *start, char *end) {
   return token;
 }
 
-static bool startswith(char *str, char *prefix) {
-  return strncmp(str, prefix, strlen(prefix)) == 0;
+static int read_punct(char *p) {
+  static char *kw[] = {};
+  for (int i = 0; i < sizeof(kw) / sizeof(*kw); i++) {
+    if (startswith(p, kw[i])) {
+      return strlen(kw[i]);
+    }
+  }
+  return ispunct(*p) ? 1 : 0;
 }
 
-static bool is_keyword(char *str) {
+static Token *read_digit(char *p) {
+  char *end;
+  int val = strtoul(p, &end, 10);
+
+  Token *token = new_token(TK_NUM, p, end);
+  token->val = val;
+  return token;
+}
+
+static Token *read_string_literal(char *p) {
+  char *start = ++p;
+  while (*p != '\'') p++;
+  int len = p - start;
+
+  Token *token = new_token(TK_STR, start, p);
+  token->str = malloc(sizeof(char) * (len + 1));
+  strncpy(token->str, start, len);
+  token->str[len] = '\0';
+  return token;
+}
+
+static Token *read_ident(char *p) {
+  char *start = p;
+  while (is_ident(*p)) p++;
+  return new_token(TK_IDENT, start, p);
+}
+
+static bool is_keyword(char *p) {
   static char *kw[] = {"select", "from", "where", "and"};
   for (int i = 0; i < sizeof(kw) / sizeof(*kw); i++) {
-    if (startswith(str, kw[i])) return true;
+    if (startswith(p, kw[i])) return true;
   }
   return false;
 }
@@ -59,51 +77,42 @@ static void convert_keywords(Token *token) {
   }
 }
 
-Token *tokenize(char *str) {
+Token *tokenize(char *p) {
   Token head = {};
   Token *cur = &head;
 
-  while (*str != '\0') {
-    if (is_whitespace(*str)) {
-      str++;
+  while (*p != '\0') {
+    if (is_whitespace(*p)) {
+      p++;
       continue;
     }
 
-    if (*str == '\'') {
-      char *start = ++str;
-      while (*str != '\'') str++;
-      Token *token = new_token(TK_STR, start, str++);
-      char *str = malloc(token->len);
-      strncpy(str, token->loc, token->len);
-      token->str = str;
-      cur = cur->next = token;
+    if (*p == '\'') {
+      cur = cur->next = read_string_literal(p);
+      p += cur->len + 2;
       continue;
     }
 
-    int punct_len = read_punct(str);
+    int punct_len = read_punct(p);
     if (punct_len > 0) {
-      cur = cur->next = new_token(TK_PUNCT, str, str + punct_len);
-      str += punct_len;
+      cur = cur->next = new_token(TK_PUNCT, p, p + punct_len);
+      p += punct_len;
       continue;
     }
 
-    int num_len = read_digit(str);
-    if (num_len > 0) {
-      Token *token = new_token(TK_NUM, str, str + num_len);
-      token->val = strtoul(str, NULL, 10);
-      cur = cur->next = token;
-      str += num_len;
+    if (isdigit(*p)) {
+      cur = cur->next = read_digit(p);
+      p += cur->len;
       continue;
     }
 
-    if (is_ident(*str)) {
-      char *start = str;
-      while (is_ident(*str)) str++;
-      cur = cur->next = new_token(TK_IDENT, start, str);
+    if (is_ident(*p)) {
+      cur = cur->next = read_ident(p);
+      p += cur->len;
       continue;
     }
   }
-  cur->next = new_token(TK_EOF, str, str);
+  cur->next = new_token(TK_EOF, p, p);
 
   convert_keywords(head.next);
   return head.next;
