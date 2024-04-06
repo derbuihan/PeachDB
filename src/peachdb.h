@@ -1,6 +1,5 @@
 #include <stdio.h>
 
+#include "lexer.yy.h"
 #include "node.h"
-
-extern int yyparse();
-extern FILE *yyin;
+#include "parser.tab.h"

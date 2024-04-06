@@ -9,8 +9,8 @@
 "-"                          { return MINUS; }
 ";"                          { return SEMICOLON; }
 [0-9]+                       {
-                                yylval = new_num_node(atoi(yytext));
-                                return NUMBER;
+                                 yylval = new_num_node(atoi(yytext));
+                                 return NUMBER;
                              }
 [ \t\n]                      { /* ignore whitespace */ }
 .                            { return yytext[0]; }
