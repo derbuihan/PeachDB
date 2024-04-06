@@ -32,7 +32,13 @@
 "*"                         { return ASTERISK; }
 ","                         { return COMMA; }
 ";"                         { return SEMICOLON; }
-"'[^']*'"                   {
+"+"                         { return PLUS; }
+"-"                         { return MINUS; }
+[0-9]+                      {
+                                yylval = new_num_node(atoi(yytext));
+                                return NUMBER;
+                            }
+'[^\']*'                    {
                                 yylval = new_str_node(strdup(yytext));
                                 return STRING;
                             }
@@ -44,7 +50,7 @@
                                 yylval = new_id_node(strdup(yytext));
                                 return ID;
                             }
-[ \t\n]                      { /* ignore whitespace */ }
+[ \t\n]                     { /* ignore whitespace */ }
 .                           { return yytext[0]; }
 %%
 
