@@ -1,8 +1,3 @@
-#include <ctype.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "peachdb.h"
 
 static bool is_whitespace(char c) { return c == ' ' || c == '\t' || c == '\n'; }
@@ -25,7 +20,7 @@ static Token *new_token(TokenKind kind, char *start, char *end) {
 }
 
 static int read_punct(char *p) {
-  static char *kw[] = {};
+  static char *kw[] = {"!="};
   for (int i = 0; i < sizeof(kw) / sizeof(*kw); i++) {
     if (startswith(p, kw[i])) {
       return strlen(kw[i]);
@@ -49,9 +44,7 @@ static Token *read_string_literal(char *p) {
   int len = p - start;
 
   Token *token = new_token(TK_STR, start, p);
-  token->str = malloc(sizeof(char) * (len + 1));
-  strncpy(token->str, start, len);
-  token->str[len] = '\0';
+  token->str = strndup(start, len);
   return token;
 }
 
@@ -62,7 +55,7 @@ static Token *read_ident(char *p) {
 }
 
 static bool is_keyword(char *p) {
-  static char *kw[] = {"select", "from", "where", "and"};
+  static char *kw[] = {"select", "delete", "from", "where", "and"};
   for (int i = 0; i < sizeof(kw) / sizeof(*kw); i++) {
     if (startswith(p, kw[i])) return true;
   }
