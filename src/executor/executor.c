@@ -1,8 +1,13 @@
 #include "peachdb.h"
 
 void execute_select_stmt(Node *stmt) {
-  printf("SELECT\n");
-  return;
+  unsigned long size = get_size(FILENAME);
+  User users[size];
+  load_storage(FILENAME, users, size);
+
+  for (int i = 0; i < size; i++) {
+    printf("%d, %s\n", users[i].id, users[i].name);
+  }
 }
 
 void execute(Node *stmt) {
