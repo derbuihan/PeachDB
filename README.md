@@ -22,3 +22,24 @@ Write the following lines in your `.zshrc` file
 export PATH="/opt/homebrew/Cellar/bison/3.8.2/bin:$PATH"
 export PATH="/opt/homebrew/Cellar/flex/2.6.4_2/bin:$PATH"
 ```
+
+## Build
+
+```bash
+$ mkdir cmake-build-debug
+$ cd cmake-build-debug
+$ cmake ..
+$ make
+```
+
+## Usage
+
+```bash
+$ ./PeachDB "select id, name from table;"
+```
+
+OR
+
+```bash
+$ echo "select id, name from table;" | ./PeachDB
+```
