@@ -3,3 +3,5 @@
 #include "lexer.yy.h"
 #include "node.h"
 #include "parser.tab.h"
+
+void execute(Node *stmt);

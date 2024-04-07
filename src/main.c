@@ -5,8 +5,9 @@ int main(int argc, char *argv[]) {
     yy_scan_string(argv[1]);
   }
 
-  Node *node = NULL;
-  yyparse(&node);
+  Node *stmt = NULL;
+  yyparse(&stmt);
+  execute(stmt);
 
   printf("Hello, World!\n");
   return 0;
