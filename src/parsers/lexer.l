@@ -1,20 +1,3 @@
-
-/*
- * <stmt> ::= <select_stmt> | <insert_stmt> | <delete_stmt> | <update_stmt>
- * <select_stmt> ::= "select" <column_list> "from" <table_name> [<where_clause>]
- * <column_list> ::= "*" | <column_name> ["," <column_list>]
- * <where_clause> ::= "where" <condition>
- * <condition> ::= <comparison> | <condition> "and" <condition>
- *                              | <condition> "or" <condition>
- * <comparison> ::= <column_name> <op> <value>
- * <op> ::= "=" | "!="
- * <value> ::= <number> | <string> | <column_name>
- * <number> ::= [0-9]+
- * <string> ::= "'" [^']* "'"
- * <column_name> ::= [a-zA-Z_][a-zA-Z0-9_]
- * <table_name> ::= [a-zA-Z_][a-zA-Z0-9_]
- */
-
 %{
     #include <stdlib.h>
     #include "node.h"

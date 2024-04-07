@@ -56,7 +56,6 @@ Node *new_num_node(int value);
 Node *new_op_node(char *op, Node *left, Node *right);
 Node *new_str_node(char *string);
 Node *new_id_node(char *ident);
-
 Node *new_select_node(Node *table_name, Node *column_list, Node *where_clause);
 Node *new_column_list_node(Node *column_name, Node *next);
 
