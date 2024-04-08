@@ -43,3 +43,10 @@ OR
 ```bash
 $ echo "select id, name from table;" | ./PeachDB
 ```
+
+## Supported SQL Commands
+
+```
+select id, name from table;
+insert into table (id, name) values (1, 'John Doe');
+```

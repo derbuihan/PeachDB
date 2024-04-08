@@ -8,6 +8,9 @@
 "select"                    { return SELECT; }
 "from"                      { return FROM; }
 "where"                     { return WHERE; }
+"insert"                    { return INSERT; }
+"into"                      { return INTO; }
+"values"                    { return VALUES; }
 "and"                       { return AND; }
 "or"                        { return OR; }
 "="                         { return EQ; }
@@ -17,6 +20,8 @@
 ";"                         { return SEMICOLON; }
 "+"                         { return PLUS; }
 "-"                         { return MINUS; }
+"("                         { return LPAREN; }
+")"                         { return RPAREN; }
 [0-9]+                      {
                                 yylval = new_num_node(atoi(yytext));
                                 return NUMBER;

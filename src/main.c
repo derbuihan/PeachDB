@@ -12,9 +12,9 @@ int main(int argc, char *argv[]) {
   };
   init_storage(FILENAME, users, sizeof(users) / sizeof(User));
 
-  Node *stmt = NULL;
-  yyparse(&stmt);
-  execute(stmt);
+  Node *node = NULL;
+  yyparse(&node);
+  execute(node);
 
   printf("Hello, World!\n");
   return 0;
